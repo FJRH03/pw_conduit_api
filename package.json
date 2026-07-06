@@ -1,0 +1,16 @@
+{
+  "name": "pw_conduit_api",
+  "version": "1.0.0",
+  "description": "## About the Web Aplication Here you can find the web application used for this API Automation Framework: - URL: https://conduit.bondaracademy.com/",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@types/node": "^26.0.1"
+  }
+}

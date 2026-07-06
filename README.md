@@ -23,4 +23,13 @@ no warm if these are visible.
 
 
 ### List of Steps used to set-up the project in your local
-1. 
+1. Run command:
+        $ npm init playwright@latest
+
+### How to run Test Cases
+1. Using command:
+        > npx playwright test
+
+2. Using node.js package.json script
+        > npm run test
+

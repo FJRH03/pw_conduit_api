@@ -1,6 +1,23 @@
 import { test, expect } from '@playwright/test';
 
-// GET
+let authToken: string;
+
+// before all hook
+test.beforeAll('run before all', async ({ request }) => {
+
+  // Request Body
+  const bodyData = { data: { "user": { "email": "franktest@test.com", "password": "Test1234" } } }
+
+  // POST request and get the token in response
+  const tokenResponse = await request.post('https://conduit-api.bondaracademy.com/api/users/login', bodyData);
+  const tokenResponseJSON = await tokenResponse.json();
+  const token = tokenResponseJSON.user.token;
+  authToken = `Token ${token}`;
+
+});
+
+
+// GET - Test Get Tags
 test('Get Test Tags', async ({ request }) => {
   const tagsResponse = await request.get('https://conduit-api.bondaracademy.com/api/tags');
 
@@ -18,7 +35,7 @@ test('Get Test Tags', async ({ request }) => {
 });
 
 
-// GET
+// GET - Get Articles
 test('Get Test Articles', async ({ request }) => {
 
   // Get API Response
@@ -36,22 +53,12 @@ test('Get Test Articles', async ({ request }) => {
 });
 
 
-// POST
+// POST - Create and Delete Article
 test('Create and Delete Test Article', async ({ request }) => {
-
-  // Request Body
-  const bodyData = { data: { "user": { "email": "franktest@test.com", "password": "Test1234" } } }
-
-  // POST request and get the token in response
-  const tokenResponse = await request.post('https://conduit-api.bondaracademy.com/api/users/login', bodyData);
-  const tokenResponseJSON = await tokenResponse.json();
-  const token = tokenResponseJSON.user.token;
-  const authToken = `Token ${token}`;
-
   // Create Article Body for POST Request
   const createArticleBody = {
     "article": {
-      "title": "Frank Test",
+      "title": "Frank Test One",
       "description": "This is a Frank Test",
       "body": "This is a description for frank test",
       "tagList": ["Playwright", "REST API"]
@@ -66,13 +73,11 @@ test('Create and Delete Test Article', async ({ request }) => {
 
   // Parse response object to JSON object
   const newArticleResponseJSON = await newArticleResponse.json();
-
-  // Get Article Slug
   const slugId = newArticleResponseJSON.article.slug;
 
   // Assertions
   expect(newArticleResponse.status()).toBe(201);
-  expect(newArticleResponseJSON.article.title).toBe('Frank Test');
+  expect(newArticleResponseJSON.article.title).toBe('Frank Test One');
 
   // Validate Article created by using GET Method
   const articlesResponse = await request.get('https://conduit-api.bondaracademy.com/api/articles?limit=2&offset=0', { headers: { Authorization: authToken } });
@@ -80,7 +85,7 @@ test('Create and Delete Test Article', async ({ request }) => {
 
   // Assertions
   expect(articlesResponse.status()).toBe(200);
-  expect(articlesJSON.articles[0].title).toBe('Frank Test');
+  expect(articlesJSON.articles[0].title).toBe('Frank Test One');
 
   // DELETE Article
   const deleteArticleResponse = await request.delete(`https://conduit-api.bondaracademy.com/api/articles/${slugId}`, {
@@ -92,19 +97,11 @@ test('Create and Delete Test Article', async ({ request }) => {
 
 });
 
+
 // GET POST PUT DELETE
 // Create, Get, Update and Delete Article Test Case
-test.only('Create, Update and Delete Test Article', async ({ request }) => {
-
-  // Request Body
-  const bodyData = { data: { "user": { "email": "franktest@test.com", "password": "Test1234" } } }
-
-  // POST request and get the token in response
-  const tokenResponse = await request.post('https://conduit-api.bondaracademy.com/api/users/login', bodyData);
-  const tokenResponseJSON = await tokenResponse.json();
-  const token = tokenResponseJSON.user.token;
-  const authToken = `Token ${token}`;
-
+test('Create, Update and Delete Test Article', async ({ request }) => {
+  
   // Create Article Body for POST Request
   const createArticleBody = {
     "article": {
